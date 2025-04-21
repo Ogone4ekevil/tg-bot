@@ -42,17 +42,6 @@ def create_db():
         )
     """)
 
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS cart_items (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            product_id INTEGER NOT NULL,
-            quantity INTEGER NOT NULL DEFAULT 1,
-            FOREIGN KEY (user_id) REFERENCES users (id),
-            FOREIGN KEY (product_id) REFERENCES products (id)
-        )
-    """)
-
     conn.commit()
     conn.close()
 
@@ -154,47 +143,6 @@ def fill_db_with_test_data():
     conn.commit()
     print("Закончим заполнение базы данных тестовыми данными.")
     conn.close()
-
-def add_to_cart(user_id: int, product_id: int):
-    print(f"add_to_cart: user_id = {user_id}, product_id = {product_id}")
-    conn = sqlite3.connect(DATABASE_NAME)
-    cursor = conn.cursor()
-
-    # Проверяем, есть ли уже такой товар в корзине
-    query = "SELECT quantity FROM cart_items WHERE user_id = ? AND product_id = ?"
-    print(f"add_to_cart: query = {query}, user_id = {user_id}, product_id = {product_id}") # Добавили логирование
-    cursor.execute(query, (user_id, product_id))
-    existing_item = cursor.fetchone()
-
-    if existing_item:
-        # Если товар уже есть в корзине, увеличиваем количество
-        quantity = existing_item[0] + 1
-        query = "UPDATE cart_items SET quantity = ? WHERE user_id = ? AND product_id = ?"
-        print(f"add_to_cart: query = {query}, quantity = {quantity}, user_id = {user_id}, product_id = {product_id}") # Добавили логирование
-        cursor.execute(query, (quantity, user_id, product_id))
-    else:
-        # Если товара еще нет в корзине, добавляем его
-        query = "INSERT INTO cart_items (user_id, product_id, quantity) VALUES (?, ?, ?)"
-        print(f"add_to_cart: query = {query}, user_id = {user_id}, product_id = {product_id}, quantity = 1") # Добавили логирование
-        cursor.execute(query, (user_id, product_id, 1))
-
-    conn.commit()
-    conn.close()
-
-def get_cart_items(user_id: int):
-    conn = sqlite3.connect(DATABASE_NAME)
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        SELECT products.id, products.name, products.price, cart_items.quantity, products.img_url
-        FROM cart_items
-        JOIN products ON cart_items.product_id = products.id
-        WHERE cart_items.user_id = ?
-    """, (user_id,))
-    cart_items = cursor.fetchall()
-
-    conn.close()
-    return cart_items
 
 def remove_from_cart(user_id: int, product_id: int):
     conn = sqlite3.connect(DATABASE_NAME)

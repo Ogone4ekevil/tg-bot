@@ -7,18 +7,18 @@ import logging
 from app.handlers import router
 from database import create_db
 
+BOT_TOKEN = '7930598432:AAGMqiZI0RGq3CayGf4pKAxuXExSoET8E9k'
 
 async def main():
     logging.basicConfig(level=logging.INFO)
-
-    bot = Bot(token='7941965797:AAGklGRIj62bYa_iioVKqLYlvstjwrvgUn4',
-            default=DefaultBotProperties(parse_mode=ParseMode.HTML)
-    )
+    bot = Bot(BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dp = Dispatcher()
     dp.include_router(router)
 
+    await bot.delete_webhook(drop_pending_updates=True)  # Удаляем webhook
+
     create_db()
-    
+
     await dp.start_polling(bot)
 
 
