@@ -30,8 +30,8 @@ async def show_products(callback: CallbackQuery):
                 for product in products:
                     print(f"Обрабатываем продукт: {product[1]}")
                     product_text = f"<b>{product[1]}</b>\n\n{product[2]}\nЦена: {product[3]} руб."
-                    # Убрали кнопку "В корзину"
-                    product_keyboard = InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Подробнее", callback_data=f'show_details_{product[0]}')]])
+                    # Используем kb.product_inline для создания клавиатуры
+                    product_keyboard = kb.product_inline(product[0])
                     try:
                         await callback.message.answer_photo(photo=product[4], caption=product_text, parse_mode="HTML", reply_markup=product_keyboard)
                     except Exception as e:

@@ -9,13 +9,15 @@ from database import create_db
 
 BOT_TOKEN = '7930598432:AAGMqiZI0RGq3CayGf4pKAxuXExSoET8E9k'
 
+cart = {}
+
 async def main():
     logging.basicConfig(level=logging.INFO)
     bot = Bot(BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dp = Dispatcher()
     dp.include_router(router)
 
-    await bot.delete_webhook(drop_pending_updates=True)  # Удаляем webhook
+    await bot.delete_webhook(drop_pending_updates=True) # Удаляем webhook
 
     create_db()
 

@@ -20,3 +20,11 @@ catalog_inline = InlineKeyboardMarkup(inline_keyboard=[
 get_number = ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text='Отправить номер',
                                                            request_contact=True)]],
                                 resize_keyboard=True)
+
+def product_inline(product_id):
+    buttons = [
+        [InlineKeyboardButton(text="Подробнее", callback_data=f"show_details_{product_id}")],
+        [InlineKeyboardButton(text="Добавить в корзину", callback_data=f"add_to_cart_product_{product_id}")],
+    ]
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    return keyboard
